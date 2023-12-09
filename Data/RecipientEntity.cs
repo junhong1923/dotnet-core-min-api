@@ -13,15 +13,15 @@ public class RecipientEntity
     /// <summary>
     /// 收件人名字
     /// </summary>
-    public string? name { get; set; }
+    public string name { get; set; }
 
     /// <summary>
     /// 收件人地址
     /// </summary>
-    public string? address { get; set; }
+    public string address { get; set; }
 
     /// <summary>
     /// 收件人電話
     /// </summary>
-    public string? phone { get; set; }
+    public string phone { get; set; }
 }

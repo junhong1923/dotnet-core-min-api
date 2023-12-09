@@ -6,7 +6,7 @@ namespace dotnet_core_min_api.Models;
 /// 物流包裹資訊
 /// </summary>
 [Keyless]
-public class DeliveryEntity
+public class DeliveryDto
 {
     /// <summary>
     /// 物流編號
@@ -21,12 +21,12 @@ public class DeliveryEntity
     /// <summary>
     /// 預計送達日期
     /// </summary>
-    public string estimated_delivery { get; set; } = null!;
-    
+    public DateOnly estimated_delivery { get; set; }
+
     /// <summary>
     /// 包裹歷史紀錄清單
     /// </summary>
-    public List<DeiveryHistoryEntity> details { get; set; } = new List<DeiveryHistoryEntity>();
+    public List<DeliveryDetailDto> details { get; set; } = new();
 
     /// <summary>
     /// 收件人資訊
@@ -36,5 +36,5 @@ public class DeliveryEntity
     /// <summary>
     /// 包裹目前所在位置
     /// </summary>
-    public DeliveryLocationEntity current_location { get; set; } = new();
+    public DeliveryLocationDto current_location { get; set; } = new();
 }

@@ -1,27 +1,41 @@
-using dotent_core_min_api.Data;
+using dotnet_core_min_api.Data;
 using dotnet_core_min_api.Models;
+using dotnet_core_min_api.Repositories;
+using dotnet_core_min_api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<MySqlDbContext>(options => options.UseNpgsql(conn));
+builder.Services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(conn));
+builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 
 var app = builder.Build();
 
-app.MapGet("/query", async ([FromQuery] string? sno, MySqlDbContext dbContext) => {
-    Console.WriteLine($"query string: {sno}");
+app.MapGet("query", async (HttpContext context, [FromServices] IDeliveryService deliveryService) =>
+{
+    var querySno = context.Request.Query["sno"];
+    Console.WriteLine($"query string sno: {querySno}");
 
-    DeliveryEntity data;
-    if (string.IsNullOrEmpty(sno))
+    var result = await deliveryService.GetDeliveryData(querySno);
+
+    if (result is null)
     {
-        data = await dbContext.delivery.FirstAsync();
+        return Results.NotFound(new ApiResponseEntity
+        {
+            Status = "error",
+            Error = new { code = 404, message = "Tracking number not found" }
+        });
     }
-    else
+    
+    return Results.Ok(new ApiResponseEntity
     {
-        data = await dbContext.delivery.FirstOrDefaultAsync(i => i.sno == sno);
-    }
+        Status = "success",
+        Data = result
+    });
+});
 
     if (data == null)
     {
