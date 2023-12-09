@@ -93,4 +93,16 @@ public class DeliveryRepository : IDeliveryRepository
 
         return await query2.FirstOrDefaultAsync();
     }
+
+    /// <summary>
+    /// 依tracking_status產生物流狀態彙總報表
+    /// </summary>
+    /// <returns>物流狀態彙總報表</returns>
+    public async Task<IEnumerable<DeliveryEntity>> Report()
+    {
+        var query = from delivery in _dbContext.delivery
+            select delivery;
+
+        return await query.ToListAsync();
+    }
 }

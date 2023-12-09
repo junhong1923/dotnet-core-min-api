@@ -53,4 +53,6 @@ app.MapGet("query", async (HttpContext context, [FromServices] IDeliveryService 
     };
 });
 
+app.MapGet("report", async ([FromServices] IDeliveryService deliveryService) => await deliveryService.Report());
+
 app.Run();

@@ -36,4 +36,24 @@ public class DeliveryService : IDeliveryService
 
         return data;
     }
+
+    /// <summary>
+    /// 依tracking_status產生報表
+    /// </summary>
+    /// <returns>物流狀態彙總報表</returns>
+    public async Task<object> Report()
+    {
+        var data = await this._deliveryRepository.Report();
+        var result = new
+        {
+            created_at = DateTime.UtcNow,
+            trackingSummary = data
+                .GroupBy(i => i.tracking_status)
+                .ToDictionary(x => x.Key, y => y.Count())
+        };
+        
+        _logger.LogInformation(JsonSerializer.Serialize(result));
+        
+        return result;
+    }
 }
