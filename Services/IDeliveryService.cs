@@ -12,6 +12,13 @@ public interface IDeliveryService
     Task<DeliveryDto?> GetDeliveryData(string? sno);
 
     /// <summary>
+    /// 建立假資料
+    /// </summary>
+    /// <param name="num"></param>
+    /// <returns></returns>
+    Task<IList<DeliveryDto>> CreateFakeDeliveryData(int num);
+
+    /// <summary>
     /// 依tracking_status產生報表
     /// </summary>
     /// <returns>物流狀態彙總報表</returns>

@@ -38,6 +38,31 @@ public class DeliveryService : IDeliveryService
     }
 
     /// <summary>
+    /// 建立假資料
+    /// </summary>
+    /// <param name="num"></param>
+    /// <returns></returns>
+    public async Task<IList<DeliveryDto>> CreateFakeDeliveryData(int num)
+    {
+        var insertedSnos = new List<string>();
+        for (var i = 0; i < num; i ++)
+        {
+            var insertedSno = await this._deliveryRepository.InsertFakeDeliveryData(i);
+            insertedSnos.Add(insertedSno);
+        }
+        
+        // 回傳此次建立的資料
+        var result = new List<DeliveryDto>();
+        foreach (var sno in insertedSnos)
+        {
+            var data = await this._deliveryRepository.GetDeliveryData(sno);
+            result.Add(data!);
+        }
+        
+        return result;
+    }
+
+    /// <summary>
     /// 依tracking_status產生報表
     /// </summary>
     /// <returns>物流狀態彙總報表</returns>

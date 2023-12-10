@@ -37,20 +37,49 @@ app.MapGet("query", async (HttpContext context, [FromServices] IDeliveryService 
     });
 });
 
-    if (data == null)
+app.MapGet("fake", async (HttpContext context, [FromServices] IDeliveryService deliveryService) =>
+{
+    var queryNum = context.Request.Query["num"];
+    Console.WriteLine($"query string num: {queryNum}");
+
+    try
     {
+        object result;
+        if (int.TryParse(queryNum, out int num))
+        {
+            if (num > 100 || num < 1)
+            {
+                return new ApiResponseEntity
+                {
+                    Status = "success",
+                    Data = "非法的 num，請輸入 1~99 的正整數"
+                };
+            }
+            
+            result = await deliveryService.CreateFakeDeliveryData(num);
+        }
+        else
+        {
+            var msg = $"Invalid query string: {queryNum}";
+            Console.WriteLine(msg);
+            result = msg;
+        }
+
+        return new ApiResponseEntity
+        {
+            Status = "success",
+            Data = result
+        };
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
         return new ApiResponseEntity
         {
             Status = "error",
-            Error = new { code = 404, message = "Tracking number not found" }
+            Error = "Something went wrong"
         };
     }
-
-    return new ApiResponseEntity
-    {
-        Status = "success",
-        Data = data
-    };
 });
 
 app.MapGet("report", async ([FromServices] IDeliveryService deliveryService) => await deliveryService.Report());
